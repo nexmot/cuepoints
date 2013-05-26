@@ -18,7 +18,7 @@
     clear:none;
 }
 
-.cuepoint_text {
+.cuepoint_item {
     
 
     margin: 0px 20px;
@@ -26,7 +26,7 @@
 } 
 
 
-.remove, .add_next {
+.remove, .add_next, .save_cuepoint {
     
 }
  
