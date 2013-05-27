@@ -8,19 +8,21 @@ $(document).ready(function() {
     
   // $('h1').text('y esto funciona?'); 
   // embed full url example http://www.youtube.com/embed/S9dqJRyk0YM
-   $('#video_url').val("S9dqJRyk0YM");
+   $('#video_url').val("http://www.youtube.com/watch?v=cRmbwczTC6E");
    var video_id = $('#video_url').val();
      
    
    $('button#submit_video').on('click', function() {
+      
+      var video_id = youtube_parser($('#video_url').val());
       
       //var video_url_embed = $('#video_url').val();
       //$('#video').html('<iframe id="player" origin="http://localhost.php-apps" width="560" height="315" src="'+video_url_embed+'" frameborder="0" allowfullscreen></iframe>');
       //$('#video').html(iframe);     
     function onYouTubeIframeAPIReady() { 
       player = new YT.Player('player', {
-                height: '195',
-                width: '360',
+                height: '390',
+                width: '580',
                 videoId: video_id,
                 events: {
                   'onReady': onPlayerReady,
@@ -28,51 +30,61 @@ $(document).ready(function() {
                 }
               }); 
     };
-
+    
     function onPlayerReady(event) {
             event.target.playVideo();
             };
     onYouTubeIframeAPIReady();
    });
       
- 
+   function youtube_parser(url){
+       var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+       var match = url.match(regExp);
+       if (match&&match[7].length==11){
+           return match[7];
+       }else{
+           alert("Url incorrecta");
+       }
+   };
 
-    var get_cuepoint_item = function () {
+   var get_cuepoint_item = function () {
      
-       return $('<li class="cuepoints" data-cuepointtime="'+player.getCurrentTime()+'"><a id="seek_point">'+formatTimestamp(player.getCurrentTime())+'</a><form action=""><input id="submit_text" class="cuepoint_item" type="text" value="enter text" ></form><button id="remove">remove</button><button id="add_next">add next</button><button id="save_cuepoint">save cuepoint</button></li>'); 
+       // return $('<li class="cuepoints" data-cuepointtime="'+player.getCurrentTime()+'"><a id="seek_point">'+formatTimestamp(player.getCurrentTime())+'</a><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" value="enter text" ></form><button id="remove">remove</button><button id="add_next">add next</button><button id="save_cuepoint">save cuepoint</button></li>'); 
        
-    };
+        return $('<tr class="cuepoints" data-cuepointtime="'+player.getCurrentTime()+'"><td><a id="seek_point">'+formatTimestamp(player.getCurrentTime())+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" ></textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button">save cuepoint</button></td></tr>'); 
+       
+   };
    
-    function addCuepoint () {
+   function addCuepoint () {
 
         console.log(player.getCurrentTime());
 
         var cuepoint_item = get_cuepoint_item();
-        $('#timer').append(cuepoint_item);  
+        $('tbody#timer').append(cuepoint_item);  
 
-    };
+   };
       
-    function addNextCuepoint () {
+   function addNextCuepoint () {
 
        console.log(player.getCurrentTime());
 
        var cuepoint_item = get_cuepoint_item();
-       $(this).closest('li').after(cuepoint_item);  
+       $(this).closest('tr').after(cuepoint_item);  
        console.log($(this));
 
-    };
+   };
     
-    function saveCuepoint() {
-        var li = $(this).closest('li');        
-        var text = li.find('input').val();
+   function saveCuepoint() {
+        var $tr = $(this).closest('tr');        
+        var text = $tr.find('textarea').val();
     
     
-        $(li).data('cuepointtext',text);
-        console.log("grabado"+li.data('cuepointtext'));
-    };
+        $($tr).data('cuepointtext',text);
+        console.log("grabado"+$tr.data('cuepointtext'));
+   };
 
     // Takes a number of seconds and returns a #h##m##s string.
-    function formatTimestamp(timestamp) {
+   function formatTimestamp(timestamp) {
           var hours = Math.floor(timestamp / 3600);
           var minutes = Math.floor((timestamp - (hours * 3600)) / 60);
           var seconds = timestamp % 60;
@@ -86,14 +98,13 @@ $(document).ready(function() {
           }
 
           return formattedTimestamp;
-    };
+   };
    
-    function generateSrt() {
+   function generateSrt() {
        
- 
      $('.cuepoints').each(function() {
          
-         $(this).data('cuepointtext',$(this).find('input').val()); 
+         $(this).data('cuepointtext',$(this).find('textarea').val()); 
          console.log($(this).data('cuepointtime') + "," + $(this).data('cuepointtext'));
          
          
@@ -103,62 +114,47 @@ $(document).ready(function() {
      //     
      //     //var li = $($('.cuepoints')[i]);
      //     var li = $('.cuepoints').eq(i);
-     //     li.data('cuepointtext',li.find('input').val()); 
+     //     li.data('cuepointtext',li.find('textarea').val()); 
      //     console.log(li.data('cuepointtime') + "," + li.data('cuepointtext'));
      //     
-     // };
-     
+     // };     
        
-    };
+   };
     
-    $('button#add_cuepoint').on('click', addCuepoint);
+   $('button#add_cuepoint').on('click', addCuepoint);
     
-    $('button#generate_srt').on('click', generateSrt);
+   $('button#generate_srt').on('click', generateSrt);
    
-    $(document).on('click','button#remove', function() {
+   $(document).on('click','button#remove', function() {
         // console.log('button clicked');
 
-        (confirm('are you sure you want to delete this cue point?')) ? $(this).closest('li').remove() : null  ;      
+        (confirm('are you sure you want to delete this cue point?')) ? $(this).closest('tr').remove() : null  ;      
 
+   });
 
-
-     });
-
-     $(document).on('click', 'button#add_next', addNextCuepoint); 
-
-
+   $(document).on('click', 'button#add_next', addNextCuepoint);  
     
-     function testAlert() { 
-        alert("testing alert");
+   $(document).on('click', 'button#save_cuepoint', saveCuepoint);
 
-    };
+   $(document).on('focus', 'textarea', function() {
 
-     
-     $(document).on('click', 'button#save_cuepoint', saveCuepoint);
+       $(this).addClass('highlighted');
 
-     $(document).on('focus', 'input', function() {
-
-        $(this).addClass('highlighted');
+   });
 
 
-     });
+   $(document).on('blur', 'input', function() {
 
+       $(this).removeClass('highlighted');
 
+   });
 
-     $(document).on('blur', 'input', function() {
+   $(document).on('click', 'a#seek_point', function() {
 
-          $(this).removeClass('highlighted');
+       var seconds = +$(this).closest('tr').data('cuepointtime');
+       player.seekTo(seconds, true);
 
-
-       });
-
-     $(document).on('click', 'a#seek_point', function() {
-
-         var seconds = +$(this).closest('li').data('cuepointtime');
-         player.seekTo(seconds, true);
-
-
-     });
+   });
      
    
     

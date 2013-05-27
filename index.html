@@ -1,25 +1,138 @@
 <!DOCTYPE html>
-<html>
-<header>
-	<script src="js/jquery-min.js"></script>
-	<script src="js/application.js"></script>
-	<link rel="stylesheet" href="css/style.css"></link>
+<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+
+<head>
+	<meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>CuePoints app</title>
+
+  
+  <link rel="stylesheet" href="css/foundation.css" />
+  
+
+  <script src="js/vendor/custom.modernizr.js"></script>
+  <script src="js/jquery-min.js"></script>
+  <script src="js/application.js"></script>
+
+</head>
+<body>
+
+	<div class="row">
+		<div class="large-12 columns">
+			<h2>Welcome to CuePoints</h2>
+			<p>The webapp to organise your YouTube videos in chapters</p>
+			<hr />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="large-12 columns panel">
+			<h3>Put chapters to a video</h3>
+
+			<!-- Grid Example -->
+
+
+
+						<p>You only need to put the url of the YouTube video. Then you will be able to start creating chapters to that video. When you Finish, you can export those chapters.</p>
+						<div class="large-12 columns">
+						        <label>YouTube video url:</label>
+						        <input id="video_url" type="text" placeholder="e.g. http://www.youtube.com/watch?v=cRmbwczTC6E"><button id="submit_video" type="button prefix" class="button">submit</button>
+						</div>
+						
+						<p>(f.e. http://www.youtube.com/watch?v=cRmbwczTC6E) check here available formats</p>
+
+		</div>
+	</div>
+	<div class="row">
 	
-</header>
-<body>
-<h1>Cuepoints App</h1>
-<div id="topbox" class="left clear">
-Put the YT video embed code
-<input id="video_url"></input>
-<button id="submit_video" type="button">submit</button>
-</div>
+		<div class="large-7 columns">
+					<div id="player" class="panel" style="height: 375px"><img src="http://placehold.it/600x390"></div>
+				</div>
+		<div class="large-5 columns">
+					<div class="panel" style="height: 375px">
+						<h2>Instructions</h2>
+						<p>Once you load a video, you can play it forward and backwards with the YouTube controls. Whenever you want to create a cuepoint, click on new cueopoint above the video</p>
+						<p>At any point you can remove a point, clicking its corresponding red button</p>
+						<p>If you want to add a cuepoint between other cuepoints, just click on add next</p>
+					</div>
+				</div>
+	</div>
+	<div class="row">
+		<div class="large-12 columns">	
+				<div class="panel">
+					<button id="add_cuepoint" type="button" class="success button">New cuepoint time!</button>
+					<button id="generate_srt" type="button">Generate srt</button>
+				</div>
+		</div>
+	</div>	
+	<div class="row">
+		<div class="large-12 columns">	
+			<div class="panel">
+				<table>
+					  <thead>
+					    <tr>
+					      <th width="50">Time</th>
+					      <th width="400">Text</th>
+					      <th width="100">Actions</th>
+					    </tr>
+					  </thead>
+					  <tbody id="timer">
+					    <!-- <tr>
+					   					      <td>Content Goes Here</td>
+					   					      <td>This is longer content Donec id elit non mi porta gravida at eget metus.</td>
+					   					      <td>Content Goes Here</td>
+					   					    </tr> -->
+					    
+					  </tbody>
+					</table>
+			</div>
+		</div>
+	</div>
 
-<div id="player"></div>
-<div class="left clear">
-<button id="add_cuepoint" type="button">New cuepoint time!</button>
-<button id="generate_srt" type="button">Generate srt</button>
+	
 
-<div id="timer" class="left"></div>
-</div>
-<body>
+  <script>
+  document.write('<script src=' +
+  ('__proto__' in {} ? 'js/vendor/zepto' : 'js/vendor/jquery') +
+  '.js><\/script>')
+  </script>
+  
+  <script src="js/foundation.min.js"></script>
+  <!--
+  
+  <script src="js/foundation/foundation.js"></script>
+  
+  <script src="js/foundation/foundation.alerts.js"></script>
+  
+  <script src="js/foundation/foundation.clearing.js"></script>
+  
+  <script src="js/foundation/foundation.cookie.js"></script>
+  
+  <script src="js/foundation/foundation.dropdown.js"></script>
+  
+  <script src="js/foundation/foundation.forms.js"></script>
+  
+  <script src="js/foundation/foundation.joyride.js"></script>
+  
+  <script src="js/foundation/foundation.magellan.js"></script>
+  
+  <script src="js/foundation/foundation.orbit.js"></script>
+  
+  <script src="js/foundation/foundation.placeholder.js"></script>
+  
+  <script src="js/foundation/foundation.reveal.js"></script>
+  
+  <script src="js/foundation/foundation.section.js"></script>
+  
+  <script src="js/foundation/foundation.tooltips.js"></script>
+  
+  <script src="js/foundation/foundation.topbar.js"></script>
+  
+  -->
+  
+  <script>
+    $(document).foundation();
+  </script>
+</body>
 </html>
