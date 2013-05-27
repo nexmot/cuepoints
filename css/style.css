@@ -6,25 +6,18 @@
      clear:both;
  }
 
+#branded_title {
+    
+    font-family: 'Jockey One', sans-serif;
+    font-size: 128px;
+    
+}
+
 #player {
     float: left;
     clear:both;
     width: 320;
     height: 195;
-
-}
-
-#timer {
-    clear:none;
-}
-
-.cuepoint_item {
-    
-
-    margin: 0px 20px;
-    
-} 
-
 
 .remove, .add_next, .save_cuepoint {
     
