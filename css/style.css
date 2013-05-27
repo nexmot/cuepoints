@@ -8,7 +8,7 @@
 
 body {
     
-    background-color: lightblue;
+    background-color: #222;
     
 }
 
@@ -16,6 +16,13 @@ body {
     
     font-family: 'Jockey One', sans-serif;
     font-size: 128px;
+    color: #ffae40;
+    
+}
+
+h2 .subtitle {
+   
+    color: #ffae40; 
     
 }
 
