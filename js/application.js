@@ -52,7 +52,7 @@ $(document).ready(function() {
      time = time || player.getCurrentTime();
      console.log(time);
        var cuepointtext = $('input#type_text').val();
-       return $('<tr class="cuepoints" data-cuepointtime="'+ time +' data-cuepointtext="'+cuepointtext+'"><td><a id="seek_point">'+formatTimestamp(time)+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" >'+cuepointtext+'</textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button" style="display:none">save cuepoint</button></td></tr>'); 
+       return $('<tr class="cuepoints" data-cuepointtime="'+ time +'" data-cuepointtext="'+cuepointtext+'"><td><a id="seek_point">'+formatTimestamp(time)+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" >'+cuepointtext+'</textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button" style="display:none">save cuepoint</button></td></tr>'); 
        
    };
    

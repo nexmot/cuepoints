@@ -6,6 +6,12 @@
      clear:both;
  }
 
+body {
+    
+    background-color: lightblue;
+    
+}
+
 #branded_title {
     
     font-family: 'Jockey One', sans-serif;
