@@ -47,19 +47,20 @@ $(document).ready(function() {
        }
    };
 
-   var get_cuepoint_item = function () {
+   var get_cuepoint_item = function (time) {
      
-       // return $('<li class="cuepoints" data-cuepointtime="'+player.getCurrentTime()+'"><a id="seek_point">'+formatTimestamp(player.getCurrentTime())+'</a><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" value="enter text" ></form><button id="remove">remove</button><button id="add_next">add next</button><button id="save_cuepoint">save cuepoint</button></li>'); 
-       
-        return $('<tr class="cuepoints" data-cuepointtime="'+player.getCurrentTime()+'"><td><a id="seek_point">'+formatTimestamp(player.getCurrentTime())+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" ></textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button">save cuepoint</button></td></tr>'); 
+     time = time || player.getCurrentTime();
+     console.log(time);
+       var cuepointtext = $('input#type_text').val();
+       return $('<tr class="cuepoints" data-cuepointtime="'+ time +' data-cuepointtext="'+cuepointtext+'"><td><a id="seek_point">'+formatTimestamp(time)+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" >'+cuepointtext+'</textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button" style="display:none">save cuepoint</button></td></tr>'); 
        
    };
    
-   function addCuepoint () {
+   function addCuepoint (time) {
 
         console.log(player.getCurrentTime());
-
-        var cuepoint_item = get_cuepoint_item();
+        console.log(time);
+        var cuepoint_item = get_cuepoint_item(time);
         $('tbody#timer').append(cuepoint_item);  
 
    };
@@ -120,6 +121,17 @@ $(document).ready(function() {
      // };     
        
    };
+   
+   var time_init_typing;
+   
+   $('input#type_text').on('keypress', function(e) {
+       time_init_typing = time_init_typing || player.getCurrentTime();
+       if(e.which == 13) {
+               addCuepoint(time = time_init_typing);
+               $('input#type_text').val("");
+               time_init_typing = null;
+           };
+       });
     
    $('button#add_cuepoint').on('click', addCuepoint);
     
