@@ -57,7 +57,6 @@ $(document).ready(function() {
    };
    
    function addCuepoint (time) {
-
         console.log(player.getCurrentTime());
         console.log(time);
         var cuepoint_item = get_cuepoint_item(time);
@@ -133,7 +132,11 @@ $(document).ready(function() {
            };
        });
     
-   $('button#add_cuepoint').on('click', addCuepoint);
+   $('button#add_cuepoint').on('click', function() {
+       
+       var time = player.getCurrentTime();
+       addCuepoint(time);
+   });
     
    $('button#generate_srt').on('click', generateSrt);
    
