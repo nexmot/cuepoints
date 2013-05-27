@@ -88,7 +88,7 @@ $(document).ready(function() {
    function formatTimestamp(timestamp) {
           var hours = Math.floor(timestamp / 3600);
           var minutes = Math.floor((timestamp - (hours * 3600)) / 60);
-          var seconds = timestamp % 60;
+          var seconds = (timestamp % 60).toFixed(2);
 
           var formattedTimestamp = (seconds < 10 ? '0' : '') + seconds + 's';
           if (minutes > 0) {
