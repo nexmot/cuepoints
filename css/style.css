@@ -26,11 +26,6 @@ h2 .subtitle {
     
 }
 
-#player {
-    float: left;
-    clear:both;
-    width: 320;
-    height: 195;
 
 .remove, .add_next, .save_cuepoint {
     
