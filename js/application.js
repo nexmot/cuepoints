@@ -33,7 +33,8 @@ $(document).ready(function() {
                 videoId: video_id,
                 events: {
                   //'onReady': onPlayerReady,
-                  'onStateChange': onPlayerStateChange
+                  'onStateChange': onPlayerStateChange,
+                  //'onError': alert("oops YouTube is not ready, please try again")
                 }
               }); 
     };
@@ -54,22 +55,29 @@ $(document).ready(function() {
        }
    };
 
-   var get_cuepoint_item = function (time) {
+   function get_cuepoint_item (time_start, time_end) {
      
-     time = time || ytplayer.getCurrentTime();
-     //console.log(time);
+       var cuepoint_time_start = time_start || ytplayer.getCurrentTime();
+       var cuepoint_time_end = time_end || time_start + cuepoint_duration;
+       //console.log(time);
        var cuepoint_text = $('input#type_text').val();
-       var cuepoint_time_start = time;
-       var cuepoint_time_end = cuepoint_time_start + cuepoint_duration;
-       console.log($cuepoint_duration.val());
-       return $('<tr class="cuepoints" data-cuepoint_time_start="'+ time +'" data-cuepoint_time_end="'+ cuepoint_time_end + '" data-cuepoint_text="'+cuepoint_text+'"><td><a id="seek_point">'+formatTimestamp(time)+'</a></td><td><a id="seek_point">'+formatTimestamp(cuepoint_time_end)+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" >'+cuepoint_text+'</textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button" style="display:none">save cuepoint</button></td></tr>'); 
+
+       //var cuepoint_time_end = cuepoint_time_start + cuepoint_duration;
+
+       //var next_cuepoint_time_start = parseFloat($(this).closest('tr').next('tr').data('cuepoint_time_start'));
+       
+       //console.log($cuepoint_duration.val());
+       return $('<tr class="cuepoints" data-cuepoint_time_start="'+ cuepoint_time_start +'" data-cuepoint_time_end="'+ cuepoint_time_end + '" data-cuepoint_text="'+cuepoint_text+'"><td><a id="seek_point">'+formatTimestamp(cuepoint_time_start)+'</a></td><td><a id="seek_point">'+formatTimestamp(cuepoint_time_end)+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" >'+cuepoint_text+'</textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button" style="display:none">save cuepoint</button></td></tr>'); 
        
    };
-   
-   function addCuepoint (time) {
+    
+   function addCuepoint (time_start, time_end) {
      //   console.log(ytplayer.getCurrentTime());
      //   console.log(time);
-        var cuepoint_item = get_cuepoint_item(time);
+     
+        var cuepoint_time_start = parseFloat($('.cuepoints').last('tr').data('cuepoint_time_end')) || 0;
+        var cuepoint_time_end = cuepoint_time_start + cuepoint_duration;
+        var cuepoint_item = get_cuepoint_item(cuepoint_time_start, cuepoint_time_end);
         $('tbody#timer').append(cuepoint_item);  
 
    };
@@ -77,8 +85,18 @@ $(document).ready(function() {
    function addNextCuepoint () {
 
       // console.log(ytplayer.getCurrentTime());
+       var cuepoint_time_start = parseFloat($(this).closest('tr').data('cuepoint_time_end'));
 
-       var cuepoint_item = get_cuepoint_item();
+       var next_cuepoint_time_start = $(this).closest('tr').next('tr').data('cuepoint_time_start');
+
+      // console.log("this is the next point start" + next_cuepoint_time_start);
+       if (next_cuepoint_time_start > 0) { console.log("more than 0");
+       var cuepoint_time_end = (cuepoint_time_start + cuepoint_duration > next_cuepoint_time_start) ? next_cuepoint_time_start : cuepoint_time_start + cuepoint_duration;
+       } else {
+          var cuepoint_time_end = cuepoint_time_start + cuepoint_duration; 
+       };
+
+       var cuepoint_item = get_cuepoint_item(cuepoint_time_start, cuepoint_time_end);
        $(this).closest('tr').after(cuepoint_item);  
        console.log($(this));
 
@@ -161,11 +179,13 @@ $(document).ready(function() {
        console.log(number_cuepoints);
        
        var cuepoint_time_start = 0;
+       var cuepoint_time_end;
        
        for (var i = 0; i < number_cuepoints; i++) {
-         
-       console.log(cuepoint_time_start);
-       addCuepoint(cuepoint_time_start);   
+       
+       cuepoint_time_end = cuepoint_time_start + cuepoint_duration;
+       
+       addCuepoint(cuepoint_time_start, cuepoint_time_end);   
        
        cuepoint_time_start += cuepoint_duration;  
            
