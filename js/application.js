@@ -11,6 +11,9 @@ $(document).ready(function() {
     $('#video_url').val("http://www.youtube.com/watch?v=cRmbwczTC6E");
     var video_id = $('#video_url').val();
     var ytplayer; 
+    var $cuepoint_duration = $('input#cuepoint_duration');
+    $cuepoint_duration.val(3) ;
+    var cuepoint_duration = parseFloat($cuepoint_duration.val());
    
    $('button#submit_video').on('click', function() {
       console.log('pressed submit');
@@ -55,8 +58,11 @@ $(document).ready(function() {
      
      time = time || ytplayer.getCurrentTime();
      //console.log(time);
-       var cuepointtext = $('input#type_text').val();
-       return $('<tr class="cuepoints" data-cuepointtime="'+ time +'" data-cuepointtext="'+cuepointtext+'"><td><a id="seek_point">'+formatTimestamp(time)+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" >'+cuepointtext+'</textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button" style="display:none">save cuepoint</button></td></tr>'); 
+       var cuepoint_text = $('input#type_text').val();
+       var cuepoint_time_start = time;
+       var cuepoint_time_end = cuepoint_time_start + cuepoint_duration;
+       console.log($cuepoint_duration.val());
+       return $('<tr class="cuepoints" data-cuepoint_time_start="'+ time +'" data-cuepoint_time_end="'+ cuepoint_time_end + '" data-cuepoint_text="'+cuepoint_text+'"><td><a id="seek_point">'+formatTimestamp(time)+'</a></td><td><a id="seek_point">'+formatTimestamp(cuepoint_time_end)+'</a></td><td><form action=""><textarea id="submit_text" class="cuepoint_item" type="text" placeholder="enter text" >'+cuepoint_text+'</textarea></form><td><button id="remove" class="small alert button">remove</button><button id="add_next" class="small button">add next</button><button id="save_cuepoint" class="small button" style="display:none">save cuepoint</button></td></tr>'); 
        
    };
    
@@ -84,20 +90,14 @@ $(document).ready(function() {
 
      };
      
-   
-
-             
-
-
-   
     
    function saveCuepoint() {
         var $tr = $(this).closest('tr');        
         var text = $tr.find('textarea').val();
     
     
-        $($tr).data('cuepointtext',text);
-        console.log("grabado"+$tr.data('cuepointtext'));
+        $($tr).data('cuepoint_text',text);
+        console.log("grabado"+$tr.data('cuepoint_text'));
    };
 
     // Takes a number of seconds and returns a #h##m##s string.
@@ -121,8 +121,8 @@ $(document).ready(function() {
        
      $('.cuepoints').each(function() {
          
-         $(this).data('cuepointtext',$(this).find('textarea').val()); 
-         console.log($(this).data('cuepointtime') + "," + $(this).data('cuepointtext'));
+         $(this).data('cuepoint_text',$(this).find('textarea').val()); 
+         console.log($(this).data('cuepoint_time_start') + "," + $(this).data('cuepoint_text'));
          
          
      });
@@ -131,8 +131,8 @@ $(document).ready(function() {
      //     
      //     //var li = $($('.cuepoints')[i]);
      //     var li = $('.cuepoints').eq(i);
-     //     li.data('cuepointtext',li.find('textarea').val()); 
-     //     console.log(li.data('cuepointtime') + "," + li.data('cuepointtext'));
+     //     li.data('cuepoint_text',li.find('textarea').val()); 
+     //     console.log(li.data('cuepoint_time_start') + "," + li.data('cuepoint_text'));
      //     
      // };     
        
@@ -157,15 +157,17 @@ $(document).ready(function() {
    
    $('button#add_cuepoint_all').on('click', function() {
        
-       var number_cuepoints = Math.floor(ytplayer.getDuration() / 5);
+       var number_cuepoints = Math.floor(ytplayer.getDuration() / cuepoint_duration);
        console.log(number_cuepoints);
        
-       var cuepointtime = 0;
+       var cuepoint_time_start = 0;
        
        for (var i = 0; i < number_cuepoints; i++) {
-       cuepointtime += 5;   
-       console.log(cuepointtime);
-       addCuepoint(cuepointtime);    
+         
+       console.log(cuepoint_time_start);
+       addCuepoint(cuepoint_time_start);   
+       
+       cuepoint_time_start += cuepoint_duration;  
            
        };
        
@@ -217,9 +219,15 @@ $(document).ready(function() {
 
    $(document).on('click', 'a#seek_point', function() {
 
-       var seconds = +$(this).closest('tr').data('cuepointtime');
+       var seconds = +$(this).closest('tr').data('cuepoint_time_start');
        ytplayer.seekTo(seconds, true);
 
+   });
+   
+   $(document).on('change', 'input#cuepoint_duration', function() {
+       //alert('cuepoint duration changed');
+       cuepoint_duration = parseFloat($('input#cuepoint_duration').val()) ;
+       
    });
      
    
@@ -260,10 +268,10 @@ $(document).ready(function() {
        // find overlays which should be visible at "time"
        var shownOverlays = false;
        for(var i=0;i<$cuepoints.length;i++){
-           cuepointtext = $('.cuepoints').eq(i).closest('tr').data('cuepointtext');
-           cuepointtime = $('.cuepoints').eq(i).closest('tr').data('cuepointtime');
-           if(cuepointtime < time && cuepointtime + 5 > time){
-               $('#prompter').text(cuepointtext);
+           cuepoint_text = $('.cuepoints').eq(i).closest('tr').data('cuepoint_text');
+           cuepoint_time_start = $('.cuepoints').eq(i).closest('tr').data('cuepoint_time_start');
+           if(cuepoint_time_start < time && cuepoint_time_start + cuepoint_duration > time){
+               $('#prompter').text(cuepoint_text);
                shownOverlays = true;
            }           
        }

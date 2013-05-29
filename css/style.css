@@ -30,6 +30,12 @@ h2 .subtitle {
 .remove, .add_next, .save_cuepoint {
     
 }
+
+.cuepoint_item {
+    
+    font-size: 14px;
+    
+}
  
 .highlighted {
     
