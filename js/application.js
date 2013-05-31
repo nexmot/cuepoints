@@ -8,7 +8,7 @@ $(document).ready(function() {
     
   // $('h1').text('y esto funciona?'); 
   // embed full url example http://www.youtube.com/embed/S9dqJRyk0YM
-    $('#video_url').val("http://www.youtube.com/watch?v=cRmbwczTC6E");
+    $('#video_url').val("http://www.youtube.com/watch?v=cRmbwczTC6E").css("display:none");
     var video_id = $('#video_url').val();
     var ytplayer; 
     var $cuepoint_duration = $('input#cuepoint_duration');
@@ -75,8 +75,8 @@ $(document).ready(function() {
      //   console.log(ytplayer.getCurrentTime());
      //   console.log(time);
      
-        var cuepoint_time_start = parseFloat($('.cuepoints').last('tr').data('cuepoint_time_end')) || 0;
-        var cuepoint_time_end = cuepoint_time_start + cuepoint_duration;
+        var cuepoint_time_start = time_start || parseFloat($('.cuepoints').last('tr').data('cuepoint_time_end')) || 0;
+        var cuepoint_time_end = time_end || (cuepoint_time_start + cuepoint_duration);
         var cuepoint_item = get_cuepoint_item(cuepoint_time_start, cuepoint_time_end);
         $('tbody#timer').append(cuepoint_item);  
 
@@ -157,13 +157,17 @@ $(document).ready(function() {
    };
    
    var time_init_typing;
+   var live_time_start_toggle = true;
    
    $('input#type_text').on('keypress', function(e) {
        time_init_typing = time_init_typing || ytplayer.getCurrentTime();
+       live_time_start_toggle = false
        if(e.which == 13) {
-               addCuepoint(time = time_init_typing);
+               addCuepoint(time_init_typing, ytplayer.getCurrentTime());
+               console.log(time_init_typing + " " + ytplayer.getCurrentTime() ) ;
                $('input#type_text').val("");
                time_init_typing = null;
+               live_time_start_toggle = true;
            };
        });
     
@@ -275,13 +279,23 @@ $(document).ready(function() {
    
    function startWatch(){
        watchId = setInterval( function(){
-           showOrHideOverlay(ytplayer.getCurrentTime());
-       },1000);
+          // showOrHideOverlay(ytplayer.getCurrentTime());
+          updatePlayerInfo();
+       },250);
        $cuepoints = $('.cuepoints');
    }
 
    function stopWatch(){
      clearTimeout(watchId);
+   }
+   
+   function updatePlayerInfo(){
+      // console.log(ytplayer.getCurrentTime());
+       showOrHideOverlay(ytplayer.getCurrentTime());
+       if (live_time_start_toggle == true) {
+       $('#live_time_start').text(ytplayer.getCurrentTime());
+       }
+       $('#live_time_end').text(ytplayer.getCurrentTime());
    }
 
    function showOrHideOverlay(time){
@@ -290,7 +304,8 @@ $(document).ready(function() {
        for(var i=0;i<$cuepoints.length;i++){
            cuepoint_text = $('.cuepoints').eq(i).closest('tr').data('cuepoint_text');
            cuepoint_time_start = $('.cuepoints').eq(i).closest('tr').data('cuepoint_time_start');
-           if(cuepoint_time_start < time && cuepoint_time_start + cuepoint_duration > time){
+           cuepoint_time_end = $('.cuepoints').eq(i).closest('tr').data('cuepoint_time_end');
+           if(cuepoint_time_start < time && cuepoint_time_start + cuepointDuration(cuepoint_time_start, cuepoint_time_end) > time){
                $('#prompter').text(cuepoint_text);
                shownOverlays = true;
            }           
@@ -298,7 +313,16 @@ $(document).ready(function() {
        if(!shownOverlays)
            $('#prompter').text("");
 
-   }
+   };
+   
+   function cuepointDuration (time_start, time_end) {
+       
+       return time_end - time_start;
+       
+       
+   };
+   
+   // the popcorn type of functionality var elem = $($('#extra-info').children('img')).attr('src','img/extras/s_1.jpg')
     
 });
 
